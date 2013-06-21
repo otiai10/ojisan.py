@@ -3,6 +3,7 @@ $(function(){
   socket = new WebSocket("ws://otiai10.com:9090/chat");
   socket.onmessage = function(ev){
     //console.log('On Message Event =>', ev);
+    console.log(JSON.parse(ev.data));
     $('#stream').prepend('<li>' + ev.data + '</li>');
   } 
   socket.onopen = function(ev){
@@ -15,7 +16,7 @@ $(function(){
       var mess = $("#message").val();
       if (mess) {
         socket.send(mess);
-        $("#message").val('');
+        $("#message").val('').focus();
       } else {
         console.log('突然のNULL String');
       }

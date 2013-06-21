@@ -1,34 +1,43 @@
 # -*- coding: utf-8 -*-
-import os
-import random
+import os, json, random, datetime
 from geventwebsocket.handler import WebSocketHandler
 from gevent import pywsgi, sleep
+from mods.usher import Usher
 
-print __file__
-
-ws_list = set()
+usher = Usher()
 
 def chat_handle (environ, start_response):
-  global cnt
-  ws = environ['wsgi.websocket']
-  ws_list.add(ws)
-  print '>>>>>>>>>>> ENTER', len(ws_list)
+  key = environ['HTTP_SEC_WEBSOCKET_KEY']
+  if usher.is_room_available():
+    _nick_tmp = key[0:4]
+    usher.add_member({'key':key,'socket':environ['wsgi.websocket'],'nickname':_nick_tmp})
+  else:
+    return False
+
+  ws = usher.get_member_socket(key)
+  print '>>>>>>>>>>> ENTER', usher.get_member_num()
   while 1:
-    # msg = ws.wait()
-    # @see : http://www.gelens.org/code/gevent-websocket/
-    msg = ws.receive()
-    msg = msg.encode('utf-8')
+    msg = ws.receive().encode('utf-8')
     if msg is None:
       break
     remove = set()
-    for s in ws_list:
+    for key, member in usher.find_all_members().iteritems():
       try:
-        s.send("This is Server. I've just got your message => " + msg)
+        res = {
+          'message'   : "This is Server. I've just got your message => " + msg,
+          'echo'      : msg,
+          'timestamp' : str(datetime.datetime.now()),
+          'id'        : key,
+          'nickname'  : usher.get_name_by_key(key),
+        }
+        jsn =  json.dumps(res, ensure_ascii=False)
+        print member
+        member['socket'].send(jsn)
       except Exception:
-        remove.add(s)
+        remove.add(key)
     for s in remove:
-      ws_list.remove(s)
-  print '<<<<<<<<<< EXIT' , len(ws_list)
+      usher.remove_member(key)
+  print '<<<<<<<<<< EXIT' , usher.get_member_num()
 
 def myapp (environ, start_response):
   path = environ["PATH_INFO"]
