@@ -23,7 +23,7 @@ def chat_handle (environ, start_response):
     remove = set()
     for s in ws_list:
       try:
-        s.send("This is Server. I'v just got your message => " + msg)
+        s.send("This is Server. I've just got your message => " + msg)
       except Exception:
         remove.add(s)
     for s in remove:
