@@ -1,6 +1,7 @@
 
 $(function(){
-  socket = new WebSocket("ws://otiai10.com:9090/chat");
+  //socket = new WebSocket("ws://%{host}:9090/chat");
+  socket = new WebSocket("ws://www15224uf.sakura.ne.jp:9090/chat");
   socket.onmessage = function(ev){
     //console.log('On Message Event =>', ev);
     console.log(JSON.parse(ev.data));

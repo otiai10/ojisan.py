@@ -3,6 +3,7 @@ import os, json, random, datetime
 from geventwebsocket.handler import WebSocketHandler
 from gevent import pywsgi, sleep
 from mods.usher import Usher
+from mods.asset import Asset
 
 usher = Usher()
 
@@ -31,7 +32,7 @@ def chat_handle (environ, start_response):
           'nickname'  : usher.get_name_by_key(key),
         }
         jsn =  json.dumps(res, ensure_ascii=False)
-        print member
+        # print member
         member['socket'].send(jsn)
       except Exception:
         remove.add(key)
@@ -43,21 +44,15 @@ def myapp (environ, start_response):
   path = environ["PATH_INFO"]
   if path == '/':
     start_response('200 OK',[("Content-type","text/html")])
-    return open('./src/view/index.html').read()
+    return Asset('/view/index.html').get()
   elif path == '/chat':
     return chat_handle(environ, start_response)
   elif path == '/js/main.js':
-    start_response('200 OK',[("Content-type","text/javascript")])
-    return open('./src/js/main.js').read()
-  elif path == '/css/main.css':
-    start_response('200 OK',[("Content-type","text/css")])
-    return open('./src/css/main.css').read()
-  elif path == '/favicon.ico':
-    start_response('200 OK',[("Content-type","image/jpeg")])
-    return open('./src/img/favicon.jpg').read()
+    start_response('200 OK',[])
+    return Asset(path).apply({'host':'otiai10.com'}).get()
   else:
-    pass
-  #raise Exception('Not Found!')
+    start_response('200 OK',[])
+    return Asset(path).get()
 
-server = pywsgi.WSGIServer(('otiai10.com', 9090), myapp, handler_class = WebSocketHandler)
+server = pywsgi.WSGIServer(('www15224uf.sakura.ne.jp', 9090), myapp, handler_class = WebSocketHandler)
 server.serve_forever()
