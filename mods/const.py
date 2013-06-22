@@ -1,14 +1,24 @@
 import os
 
 class Const:
-  def __init__(self):
-    self.conf = {
-      'www15224uf' : {
-        'host' : 'www15224uf.sakura.ne',
-        'rurl' : 'http://www15224uf.sakura.ne.jp/',
-      },
-    }
 
-  def get_conf(self):
-    host = os.uname()[1]
-    return self.conf[host]
+  const = {
+    'conf' : {
+      'www15224uf' : {
+        'host' : 'www15224uf.sakura.ne.jp',
+        'rurl' : 'http://www15224uf.sakura.ne.jp/',
+        'port' : 9090,
+      }
+    }
+  }
+
+  def __init__(self):
+    pass
+
+  @classmethod
+  def get(self, key):
+    if key == 'conf':
+      host = os.uname()[1]
+      return self.const['conf'][host]
+    else:
+      return self.const[key]

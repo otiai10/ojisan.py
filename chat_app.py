@@ -2,10 +2,13 @@
 import os, json, random, datetime
 from geventwebsocket.handler import WebSocketHandler
 from gevent import pywsgi, sleep
+
 from mods.usher import Usher
 from mods.asset import Asset
+from mods.const import Const
 
 usher = Usher()
+conf  = Const.get('conf')
 
 def chat_handle (environ, start_response):
   key = environ['HTTP_SEC_WEBSOCKET_KEY']
@@ -49,10 +52,10 @@ def myapp (environ, start_response):
     return chat_handle(environ, start_response)
   elif path == '/js/main.js':
     start_response('200 OK',[])
-    return Asset(path).apply({'host':'otiai10.com'}).get()
+    return Asset(path).apply({'host':conf['host']}).get()
   else:
     start_response('200 OK',[])
     return Asset(path).get()
 
-server = pywsgi.WSGIServer(('www15224uf.sakura.ne.jp', 9090), myapp, handler_class = WebSocketHandler)
+server = pywsgi.WSGIServer((conf['host'], conf['port']), myapp, handler_class = WebSocketHandler)
 server.serve_forever()
