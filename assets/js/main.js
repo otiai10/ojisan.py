@@ -4,8 +4,8 @@ $(function(){
   socket = new WebSocket("ws://www15224uf.sakura.ne.jp:9090/chat");
   socket.onmessage = function(ev){
     //console.log('On Message Event =>', ev);
-    console.log(JSON.parse(ev.data));
-    $('#stream').prepend('<li>' + ev.data + '</li>');
+    data = JSON.parse(ev.data);
+    $('#stream').prepend('<li>' + data.nickname + data.echo + '</li>');
   } 
   socket.onopen = function(ev){
     //console.log('On Open Event =>', ev);
