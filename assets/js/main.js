@@ -11,11 +11,11 @@ $(function(){
   socket = new WebSocket("ws://%{host}:%{port}/chat");
   socket.onmessage = function(ev){
     var data = JSON.parse(ev.data);
-    console.log(data);
+    // console.log(data);
     dispatchMessage(data);
   } 
   socket.onopen = function(ev){
-    console.log('open event => ', ev);
+    // console.log('open event => ', ev);
     mess = JSON.stringify({'request':'/me/id','params':null});
     socket.send(mess);
   }
