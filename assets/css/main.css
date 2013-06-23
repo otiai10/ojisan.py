@@ -37,3 +37,10 @@ img#goodmorning {
 #center-main {
   width: 480px;
 }
+
+td.person {
+  font-weight: bold;
+}
+td.person.me {
+  color: blue;
+}
