@@ -1,3 +1,4 @@
+import cgi
 
 class Main:
   def __init__(self):
@@ -10,7 +11,7 @@ class Main:
     message = self.params['message'].encode('utf-8')
     self.result = {
       'content' : {
-        'message' : message,
+        'message' : cgi.escape(message),
         'kaotype' : self.params['kaotype'],
       },
       'sender'  : self.params['id'],
