@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import os, json, random, datetime
+import os, json, datetime, re
 from geventwebsocket.handler import WebSocketHandler
 from gevent import pywsgi, sleep
 
@@ -10,7 +10,7 @@ from mods.const import Const
 usher = Usher()
 conf  = Const.get('conf')
 
-def chat_handle (environ, start_response):
+def chat_handle (environ, set_header):
   key = environ['HTTP_SEC_WEBSOCKET_KEY']
   if usher.is_room_available():
     _nick_tmp = key[0:4]
@@ -44,18 +44,23 @@ def chat_handle (environ, start_response):
       usher.remove_member(key)
   print '<<<<<<<<<< EXIT' , usher.get_member_num()
 
-def myapp (environ, start_response):
+def myapp (environ, set_header):
   path = environ["PATH_INFO"]
   if path == '/':
-    start_response('200 OK',[("Content-type","text/html")])
+    # first rendering
+    set_header('200 OK',[("Content-type","text/html")])
     return Asset('/view/index.html').get()
   elif path == '/chat':
-    return chat_handle(environ, start_response)
-  elif path == '/js/main.js':
-    start_response('200 OK',[])
-    return Asset(path).apply({'host':conf['host']}).get()
+    # ws connection
+    return chat_handle(environ, set_header)
+  elif re.match('.*\.js', path) is not None:
+    set_header('200 OK',[('Content-Type','text/javascript')])
+    return Asset(path).apply({'host':conf['host'],'port':conf['port']}).get()
+  elif re.match('.*\.css', path) is not None:
+    set_header('200 OK',[('Content-Type','text/css')])
+    return Asset(path).get()
   else:
-    start_response('200 OK',[])
+    set_header('200 OK',[])
     return Asset(path).get()
 
 server = pywsgi.WSGIServer((conf['host'], conf['port']), myapp, handler_class = WebSocketHandler)
