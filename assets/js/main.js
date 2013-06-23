@@ -53,7 +53,7 @@ function buildMessageHTML(data){
     str += '<br>' + data.sender.nickname;
     str += '</td>';
   }else{ str += '<td></td>'; }
-  str += '<td><span>' + data.content.message + '</span></td>';
+  str += '<td class="content"><span>' + data.content.message + '</span></td>';
   if (!data.sender.is_me) {
     str += '<td class="person">';
     str += ' > ' + getKaoHtml(data);

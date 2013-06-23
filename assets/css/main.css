@@ -27,20 +27,27 @@ button {
 }
 
 #left-main {
-  width: 420px;
+  width: 300px;
 }
 
 img#goodmorning {
-  width: 400px;
+  width: 280px;
 }
 
 #center-main {
-  width: 480px;
+  width: 600px;
+  min-width: 600px;
+  max-width: 600px;
 }
 
 td.person {
   font-weight: bold;
+  min-width: 120px;
 }
 td.person.me {
   color: blue;
+}
+
+td.content {
+  background-color: #f3f3f3;
 }
