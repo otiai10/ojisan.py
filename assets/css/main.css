@@ -2,10 +2,22 @@ html, body {
   clear: both;
   margin: 0;
   padding: 0;
+  height: 100%;
+  width: 100%;
   font-family: 'Trebuchet MS', 'Arial', 'Helvetica', 'ヒラギノ角ゴ Pro W3', 'Hiragino Kaku Gothic Pro', 'メイリオ', Meiryo, 'ＭＳ Ｐゴシック', 'MS PGothic', sans-serif;
 }
 
+html {
+  background-image: url('../img/bg.png');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: right bottom;
+}
+body {
+}
+
 h1 {
+  margin-top: 0;
   color: rgba(215,69,152, 1);
   text-shadow: 3px  3px 0 #fff,
               -3px -3px 0 #fff,
@@ -20,6 +32,7 @@ button {
 .box-wrapper {
   display: -webkit-box;
 }
+
 
 #wrapper, .bar {
   width: 900px;
@@ -49,5 +62,5 @@ td.person.me {
 }
 
 td.content {
-  background-color: #f3f3f3;
+  background-color: rgba(245,245,245,0.8);
 }
