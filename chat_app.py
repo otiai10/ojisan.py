@@ -28,6 +28,8 @@ def socket_by_socket(environ):
       removed_list.add(key)
       break
     result = Message.handle(msg, key)
+    if 'nickname' in result:
+      usher.set_nickname(result['sender'], result['nickname'])
     sender = usher.get_member(result['sender'])
     if sender is None:
       removed_list.add(result['sender'])

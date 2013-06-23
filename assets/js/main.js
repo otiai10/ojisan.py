@@ -1,10 +1,11 @@
 var __my_id = '';
-var kaomoji = [
-  '(ﾟ⊿ﾟ)',
-  '(☝ ՞ਊ ՞）☝',
-  '（；^ω^）',
-  '(´・ω・`)',
-];
+var kaomoji = {
+  '0':'(ﾟ⊿ﾟ)',
+  '1':'(☝ ՞ਊ ՞）☝',
+  '2':'（；^ω^）',
+  '3':'(´・ω・`)',
+  '101':'( ・`д・´)ｷﾘｯ',
+};
 
 $(function(){
   socket = new WebSocket("ws://%{host}:%{port}/chat");
@@ -31,6 +32,16 @@ $(function(){
         console.log('＿人人人人人人人人人人人＿\n＞　突然の NULL String　＜\n￣Y^Y^Y^Y^Y^Y^Y^Y^Y￣');
       }
   });
+
+  $(".nnchange").on('click', function(){
+    var nickname = $("#nickname").val();
+    var kaotype = $(this).attr('kaotype');
+    if (nickname) {
+      var data = JSON.stringify({'request':'/me/nickname','nickname':nickname,'kaotype':kaotype,'id':__my_id});
+      socket.send(data);
+      $("#message").val('').focus();
+    }
+  });
 });
 
 function dispatchMessage(data){
@@ -41,6 +52,9 @@ function dispatchMessage(data){
     case '/me/id':
       __my_id = data.content.id;
       break;
+    case '/me/nickname':
+      $('#nickname').val(data.content.nickname);
+      $('#stream').prepend(buildMessageHTML(data));
     default:
   }
 }

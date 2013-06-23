@@ -38,3 +38,9 @@ class Usher:
     else:
       return False
 
+  def set_nickname(self, key, nickname):
+    if self.members.has_key(key):
+      self.members[key]['nickname'] = nickname
+      return nickname
+    else:
+      return None
