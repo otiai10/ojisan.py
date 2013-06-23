@@ -1,25 +1,33 @@
 import json, datetime
+from mods.handler import Handler
+from mods.usher import Usher
 
 class Message:
 
-  def __init__(self, member):
-    self.member = member
+  def __init__(self, to_member):
+    self.to_member = to_member
 
-  def handle(self, msg):
-    self.msg = msg.encode('utf-8')
-    return self
-
-  def generate(self):
-    res = {
-      'message'   : "This is Server. I've just got your message => " + self.msg,
-      'echo'      : self.msg,
-      'timestamp' : str(datetime.datetime.now()),
-      'id'        : self.member['key'],
-      'nickname'  : self.member['nickname']
+  def build(self, params):
+    if params['sender']['key'] == self.to_member['key']:
+      is_me = True
+    else:
+      is_me = False
+    response = {
+      'content' : params['content'],
+      'sender'  : {
+        'nickname' : params['sender']['nickname'],
+        'is_me'    : is_me
+      },
+      'request' : params['request'],
     }
-    self.result = json.dumps(res, ensure_ascii=False)
-    return self.result
+    #return json.dumps(response, ensure_ascii=False)
+    return json.dumps(response)
 
   @classmethod
-  def parse_request(self, request_str):
-    print request_str.split('/')
+  def handle(self, msg, key):
+    msg = msg.encode('utf-8')
+    _orig = json.loads(msg)
+    _orig['socket_key'] = key
+    result = Handler(_orig).execute()
+    return result
+

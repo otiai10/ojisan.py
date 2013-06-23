@@ -25,11 +25,22 @@ def socket_by_socket(environ):
     removed_list = set()
     msg = ws.receive()
     if msg is None:
+      removed_list.add(key)
       break
-    for key, member in usher.find_all_members().iteritems():
-      message = Message(member).handle(msg).generate()
+    # process and set the speaker key
+    result = Message.handle(msg, key)
+    # append sender info
+    result['sender'] = usher.get_member(result['sender'])
+    if result['private']:
+      to_member = usher.get_member(key)
+      message = Message(to_member).build(result)
+      ws.send(message)
+      continue
+    for key, to_member in usher.find_all_members().iteritems():
+      # judge is_me and json.dumps
+      message = Message(to_member).build(result)
       try:
-        member['socket'].send(message)
+          to_member['socket'].send(message)
       except Exception as e:
         print e.message
         removed_list.add(key)
