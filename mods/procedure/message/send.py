@@ -11,6 +11,7 @@ class Main:
     self.result = {
       'content' : {
         'message' : message,
+        'kaotype' : self.params['kaotype'],
       },
       'sender'  : self.params['id'],
     }

@@ -1,8 +1,16 @@
 var __my_id = '';
+var kaomoji = [
+  '(ﾟ⊿ﾟ)',
+  '(☝ ՞ਊ ՞）☝',
+  '（；^ω^）',
+  '(´・ω・`)',
+];
+
 $(function(){
   socket = new WebSocket("ws://%{host}:%{port}/chat");
   socket.onmessage = function(ev){
     var data = JSON.parse(ev.data);
+    console.log(data);
     dispatchMessage(data);
   } 
   socket.onopen = function(ev){
@@ -57,5 +65,5 @@ function buildMessageHTML(data){
 }
 
 function getKaoHtml(data){
-  return '(ﾟ⊿ﾟ) ';
+  return kaomoji[data.content.kaotype];
 }
