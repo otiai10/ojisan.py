@@ -21,10 +21,11 @@ def chat_handle (environ, start_response):
   ws = usher.get_member_socket(key)
   print '>>>>>>>>>>> ENTER', usher.get_member_num()
   while 1:
-    msg = ws.receive().encode('utf-8')
+    msg = ws.receive()
     if msg is None:
       break
     remove = set()
+    msg = msg.encode('utf-8')
     for key, member in usher.find_all_members().iteritems():
       try:
         res = {
