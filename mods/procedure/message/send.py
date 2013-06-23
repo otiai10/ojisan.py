@@ -7,12 +7,12 @@ class Main:
     self.params = params
 
   def perform(self):
-    message = self.params['params'].encode('utf-8')
+    message = self.params['message'].encode('utf-8')
     self.result = {
       'content' : {
         'message' : message,
       },
-      'sender'  : self.params['socket_key'],
+      'sender'  : self.params['id'],
     }
 
   def after(self):

@@ -21,23 +21,23 @@ def socket_by_socket(environ):
 
   ws = usher.get_member_socket(key)
   print '>>>>>>>>>>> ENTER', usher.get_member_num()
+  removed_list = set()
   while 1:
-    removed_list = set()
     msg = ws.receive()
     if msg is None:
       removed_list.add(key)
       break
-    # process and set the speaker key
     result = Message.handle(msg, key)
-    # append sender info
-    result['sender'] = usher.get_member(result['sender'])
+    sender = usher.get_member(result['sender'])
+    if sender is None:
+      removed_list.add(result['sender'])
+    result['sender'] = sender 
     if result['private']:
       to_member = usher.get_member(key)
       message = Message(to_member).build(result)
       ws.send(message)
       continue
     for key, to_member in usher.find_all_members().iteritems():
-      # judge is_me and json.dumps
       message = Message(to_member).build(result)
       try:
           to_member['socket'].send(message)
@@ -46,6 +46,8 @@ def socket_by_socket(environ):
         removed_list.add(key)
     for k in removed_list:
       usher.remove_member(k)
+  for k in removed_list:
+    usher.remove_member(k)
   print '<<<<<<<<<< EXIT' , usher.get_member_num()
 
 def myapp (environ, set_header):

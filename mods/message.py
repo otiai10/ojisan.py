@@ -18,16 +18,18 @@ class Message:
         'nickname' : params['sender']['nickname'],
         'is_me'    : is_me
       },
-      'request' : params['request'],
+      'timestamp' : str(datetime.datetime.now()),
+      'request'   : params['request'],
     }
     #return json.dumps(response, ensure_ascii=False)
     return json.dumps(response)
 
   @classmethod
-  def handle(self, msg, key):
+  def handle(self, msg, key=None):
     msg = msg.encode('utf-8')
     _orig = json.loads(msg)
-    _orig['socket_key'] = key
+    if key is not None:
+      _orig['socket_key'] = key
     result = Handler(_orig).execute()
     return result
 
