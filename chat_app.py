@@ -6,11 +6,12 @@ from gevent import pywsgi, sleep
 from mods.usher import Usher
 from mods.asset import Asset
 from mods.const import Const
+from mods.message import Message
 
 usher = Usher()
 conf  = Const.get('conf')
 
-def chat_handle (environ, set_header):
+def socket_by_socket(environ):
   key = environ['HTTP_SEC_WEBSOCKET_KEY']
   if usher.is_room_available():
     _nick_tmp = key[0:4]
@@ -21,38 +22,28 @@ def chat_handle (environ, set_header):
   ws = usher.get_member_socket(key)
   print '>>>>>>>>>>> ENTER', usher.get_member_num()
   while 1:
+    removed_list = set()
     msg = ws.receive()
     if msg is None:
       break
-    remove = set()
-    msg = msg.encode('utf-8')
     for key, member in usher.find_all_members().iteritems():
+      message = Message(member).handle(msg).generate()
       try:
-        res = {
-          'message'   : "This is Server. I've just got your message => " + msg,
-          'echo'      : msg,
-          'timestamp' : str(datetime.datetime.now()),
-          'id'        : key,
-          'nickname'  : usher.get_name_by_key(key),
-        }
-        jsn =  json.dumps(res, ensure_ascii=False)
-        # print member
-        member['socket'].send(jsn)
-      except Exception:
-        remove.add(key)
-    for s in remove:
-      usher.remove_member(key)
+        member['socket'].send(message)
+      except Exception as e:
+        print e.message
+        removed_list.add(key)
+    for k in removed_list:
+      usher.remove_member(k)
   print '<<<<<<<<<< EXIT' , usher.get_member_num()
 
 def myapp (environ, set_header):
   path = environ["PATH_INFO"]
   if path == '/':
-    # first rendering
     set_header('200 OK',[("Content-type","text/html")])
     return Asset('/view/index.html').get()
   elif path == '/chat':
-    # ws connection
-    return chat_handle(environ, set_header)
+    return socket_by_socket(environ)
   elif re.match('.*\.js', path) is not None:
     set_header('200 OK',[('Content-Type','text/javascript')])
     return Asset(path).apply({'host':conf['host'],'port':conf['port']}).get()
