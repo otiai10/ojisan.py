@@ -8,6 +8,7 @@ var kaomoji = {
 };
 
 $(function(){
+  $("#forms").hide();
   socket = new WebSocket("ws://%{host}:%{port}/chat");
   socket.onmessage = function(ev){
     var data = JSON.parse(ev.data);
@@ -51,6 +52,7 @@ function dispatchMessage(data){
       break;
     case '/me/id':
       __my_id = data.content.id;
+      $("#forms").fadeIn(100);
       break;
     case '/me/nickname':
       $('#nickname').val(data.content.nickname);
