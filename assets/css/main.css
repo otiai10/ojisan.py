@@ -3,25 +3,18 @@ html, body {
   margin: 0;
   padding: 0;
   font-family: 'Trebuchet MS', 'Arial', 'Helvetica', 'ヒラギノ角ゴ Pro W3', 'Hiragino Kaku Gothic Pro', 'メイリオ', Meiryo, 'ＭＳ Ｐゴシック', 'MS PGothic', sans-serif;
-  /* background-color: rgba(249,237,112,1); */
-  background-color: #f0f0f0;
-}
-
-button {
-  font-size: 1em;
-  padding: 10px;
-  border-radius: 5px;
 }
 
 h1 {
-  font-size: 3em;
   color: rgba(215,69,152, 1);
   text-shadow: 3px  3px 0 #fff,
               -3px -3px 0 #fff,
               -3px  0px 0 rgba(249, 237, 112, 1),
                0px -3px 0 rgba(249, 237, 112, 1);
-  /* text-shadow: 5px 5px 0 rgba(249,237,112,1); */
-  /* text-shadow: 0 0 10 #f9ec70; */
+}
+
+button {
+  font-weight: bold;
 }
 
 .box-wrapper {
