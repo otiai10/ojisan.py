@@ -8,10 +8,10 @@ class Message:
     self.to_member = to_member
 
   def build(self, params):
-    if params['sender']['key'] == self.to_member['key']:
-      is_me = True
-    else:
-      is_me = False
+    is_me = False
+    if params['sender'] is not None:
+      if params['sender']['key'] == self.to_member['key']:
+        is_me = True
     response = {
       'content' : params['content'],
       'sender'  : {

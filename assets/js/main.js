@@ -61,7 +61,7 @@ function dispatchMessage(data){
     case '/me/id':
       __my_id = data.content.id;
       $("#forms").fadeIn(100);
-      var data = JSON.stringify({'request':'/message/send','message':'このひとが入室しました！','kaotype':'101','id':__my_id});
+      var data = JSON.stringify({'request':'/message/send','message':'just entered this room','kaotype':'101','id':__my_id});
       __socket.send(data);
       break;
     case '/me/nickname':
@@ -71,6 +71,9 @@ function dispatchMessage(data){
       $('#stream').prepend(buildMessageHTML(data));
       __unread_cnt++;
       break;
+    case '/me/leave':
+      $('#stream').prepend(buildMessageHTML(data));
+      __unread_cnt++;
     default:
   }
   updateUnread();
