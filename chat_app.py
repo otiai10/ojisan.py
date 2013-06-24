@@ -50,21 +50,32 @@ def socket_by_socket(environ):
         try:
             to_member['socket'].send(message)
         except Exception as e:
-          print e.message
+          # print e.message
           removed_list.add(key)
       # ---
 
     # --- refresh member list
     already_left = False
     for k in removed_list:
-      usher.remove_member(k)
-      print k, key
+      removed_member = usher.get_member(k)
+      remained_members = usher.remove_member(k, get_remained=True)
+      for rk,rm in remained_members.iteritems():
+        msg = json.dumps({'request':'/me/leave','removed_member':{'nickname':removed_member['nickname'],'id':removed_member['key']},'kaotype':'101'}).encode('utf-8')
+        result  = Message.handle(msg, key)
+        message = Message(rm).build(result)
+        try:
+          rm['socket'].send(message)
+        except Exception as e:
+          # print e.message
+          pass
       if k == key:
         # it's me
         already_left = True
     # ---
+
     if already_left:
       break
+
   print '<<<<<<<<<< EXIT' , usher.get_member_num()
 
 def myapp (environ, set_header):

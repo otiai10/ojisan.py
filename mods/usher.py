@@ -27,9 +27,11 @@ class Usher:
     else:
       return None
 
-  def remove_member(self, key):
+  def remove_member(self, key, get_remained=False):
     if self.members.has_key(key):
       self.members.pop(key)
+    if get_remained:
+      return self.members
     return True
 
   def get_name_by_key(self, key):

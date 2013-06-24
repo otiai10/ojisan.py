@@ -12,7 +12,10 @@ class Main:
         'message' : self.params['removed_member']['nickname'] + ' just exited this room',
         'kaotype' : self.params['kaotype'],
       },
-      'sender'  : self.params['removed_member']['id'],
+      'sender'  : {
+        'key'      : self.params['removed_member']['id'],
+        'nickname' : self.params['removed_member']['nickname'],
+      },
     }
 
   def after(self):
