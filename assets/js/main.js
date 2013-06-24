@@ -8,19 +8,20 @@ var __kaomoji = {
 };
 var __unread_cnt = 0;
 var __titile_suffix = 'アサカツおじさん';
+var __socket;
 
 $(function(){
   $("#forms").hide();
-  socket = new WebSocket("ws://%{host}:%{port}/chat");
-  socket.onmessage = function(ev){
+  __socket = new WebSocket("ws://%{host}:%{port}/chat");
+  __socket.onmessage = function(ev){
     var data = JSON.parse(ev.data);
     // console.log(data);
     dispatchMessage(data);
   } 
-  socket.onopen = function(ev){
+  __socket.onopen = function(ev){
     // console.log('open event => ', ev);
     mess = JSON.stringify({'request':'/me/id','params':null});
-    socket.send(mess);
+    __socket.send(mess);
   }
 
   // register click event
@@ -29,7 +30,7 @@ $(function(){
       var kaotype = $(this).attr('kaotype');
       if (mess) {
         var data = JSON.stringify({'request':'/message/send','message':mess,'kaotype':kaotype,'id':__my_id});
-        socket.send(data);
+        __socket.send(data);
         $("#message").val('').focus();
       } else {
         console.log('＿人人人人人人人人人人人＿\n＞　突然の NULL String　＜\n￣Y^Y^Y^Y^Y^Y^Y^Y^Y￣');
@@ -41,7 +42,7 @@ $(function(){
     var kaotype = $(this).attr('kaotype');
     if (nickname) {
       var data = JSON.stringify({'request':'/me/nickname','nickname':nickname,'kaotype':kaotype,'id':__my_id});
-      socket.send(data);
+      __socket.send(data);
       $("#message").val('').focus();
     }
   });
@@ -60,6 +61,8 @@ function dispatchMessage(data){
     case '/me/id':
       __my_id = data.content.id;
       $("#forms").fadeIn(100);
+      var data = JSON.stringify({'request':'/message/send','message':'このひとが入室しました！','kaotype':'101','id':__my_id});
+      __socket.send(data);
       break;
     case '/me/nickname':
       if (data.sender.is_me) {
