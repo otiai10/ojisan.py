@@ -55,8 +55,11 @@ function dispatchMessage(data){
       $("#forms").fadeIn(100);
       break;
     case '/me/nickname':
-      $('#nickname').val(data.content.nickname);
+      if (data.sender.is_me) {
+        $('#nickname').val(data.content.nickname);
+      }
       $('#stream').prepend(buildMessageHTML(data));
+      break;
     default:
   }
 }
