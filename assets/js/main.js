@@ -1,11 +1,13 @@
 var __my_id = '';
-var kaomoji = {
+var __kaomoji = {
   '0':'(ﾟ⊿ﾟ)',
   '1':'(☝ ՞ਊ ՞）☝',
   '2':'（；^ω^）',
   '3':'(´・ω・`)',
   '101':'( ・`д・´)ｷﾘｯ',
 };
+var __unread_cnt = 0;
+var __titile_suffix = 'アサカツおじさん';
 
 $(function(){
   $("#forms").hide();
@@ -43,12 +45,17 @@ $(function(){
       $("#message").val('').focus();
     }
   });
+
+  $('.read').on('focus', function(){
+    refreshTitle();
+  });
 });
 
 function dispatchMessage(data){
   switch(data.request){
     case '/message/send':
       $('#stream').prepend(buildMessageHTML(data));
+      __unread_cnt++;
       break;
     case '/me/id':
       __my_id = data.content.id;
@@ -59,9 +66,11 @@ function dispatchMessage(data){
         $('#nickname').val(data.content.nickname);
       }
       $('#stream').prepend(buildMessageHTML(data));
+      __unread_cnt++;
       break;
     default:
   }
+  updateUnread();
 }
 
 function buildMessageHTML(data){
@@ -84,5 +93,19 @@ function buildMessageHTML(data){
 }
 
 function getKaoHtml(data){
-  return kaomoji[data.content.kaotype];
+  return __kaomoji[data.content.kaotype];
+}
+
+function updateUnread(){
+  if (__unread_cnt == 0) {
+    $('title').html(__titile_suffix );
+  } else {
+    $('title').html('(' + __unread_cnt + ')' + __titile_suffix );
+  }
+  return true;
+}
+
+function refreshTitle(){
+  __unread_cnt = 0;
+  updateUnread();
 }
