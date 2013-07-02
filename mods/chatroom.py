@@ -4,7 +4,6 @@ class Chatroom:
   __members = []
 
   def __init__(self):
-    print __file__
     pass
 
   def join(self, member):

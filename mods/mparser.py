@@ -1,3 +1,3 @@
 
 def hoge():
-  print __file__
+  pass

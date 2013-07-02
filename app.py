@@ -5,14 +5,17 @@ from gevent import pywsgi
 from mods import *
 
 def myapp (environ, set_header):
+  mparser.hoge()
   chatroom = Chatroom()
   path = environ["PATH_INFO"]
   if path == '/chat':
     return socket_by_socket(environ)
   if path == '/':
+    # TODO : enable partials
     set_header('200 OK',[("Content-type","text/html")])
     return open('assets/view/index.html').read()
-  # handle js request
+  # {{{  handle js request
+  # TODO : squash to Asset module
   elif re.match('/js/app.js', path):
     set_header('200 OK',[("Content-type","text/javascript")])
     return open('assets/js/app.js').read()
@@ -25,7 +28,7 @@ def myapp (environ, set_header):
   elif re.match('/js/core/backbone.js', path):
    set_header('200 OK',[("Content-type","text/javascript")])
    return open('assets/js/core/backbone.js').read()
- 
+  # }}}
   else:
     set_header('200 OK',[])
     return ''
