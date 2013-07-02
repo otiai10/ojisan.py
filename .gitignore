@@ -1,2 +1,4 @@
 *.pyc
+assets/js/core/backbone
 assets/js/core/backbone/*
+log/*
