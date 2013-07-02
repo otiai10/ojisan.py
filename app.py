@@ -1,12 +1,13 @@
-import os, json, datetime, re
+import re
 from geventwebsocket.handler import WebSocketHandler
 from gevent import pywsgi
 
 from mods import *
 
 def myapp (environ, set_header):
-  mparser.hoge()
+  # 1 room by 1 app
   chatroom = Chatroom()
+
   path = environ["PATH_INFO"]
   if path == '/chat':
     return socket_by_socket(environ)
