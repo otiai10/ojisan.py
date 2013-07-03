@@ -45,6 +45,7 @@ def socket_by_socket(environ):
     if msg is None:
       break
     else:
+      parsed_m = Message.parse(msg)
       ws.send(msg)
   print '<<<<<<<<<< EXIT'
 
