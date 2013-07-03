@@ -19,7 +19,7 @@ log_path='log/'$cur_date'.log'
 case $1 in
   "start" )
     if [ $# -lt 2 ]; then
-      python -B $PWD/app.py >> $log_path
+      python -B $PWD/app.py
     elif [ "$2" = "d" ]; then
       nohup python -B $PWD/app.py >> $log_path &
     else
