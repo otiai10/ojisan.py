@@ -45,7 +45,8 @@ def socket_by_socket(environ):
     if msg is None:
       break
     else:
-      parsed_m = Message.parse(msg)
+      print util.jsonstr2dict(msg)
+      print environ
       ws.send(msg)
   print '<<<<<<<<<< EXIT'
 
