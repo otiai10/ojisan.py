@@ -4,9 +4,10 @@ from gevent import pywsgi
 
 from mods import *
 
+# 1 room by 1 app
+chatroom = Chatroom()
+
 def myapp (environ, set_header):
-  # 1 room by 1 app
-  chatroom = Chatroom()
 
   path = environ["PATH_INFO"]
   if path == '/chat':
@@ -36,19 +37,19 @@ def myapp (environ, set_header):
 
 def socket_by_socket(environ):
 
-  ws = environ['wsgi.websocket']
-
-  member = Member(ws)
-  print '>>>>>>>>>>> ENTER'
+  me = Member(environ['HTTP_SEC_WEBSOCKET_KEY'],environ['wsgi.websocket'])
+  chatroom.add_member(me)
+  print '>>>>>>>>>>> ENTER : %s' % str(chatroom.get_member_count())
   while 1:
-    msg = ws.receive()# wait for message
+    msg = me.listen()
     if msg is None:
+      chatroom.remove_member(me)
       break
     else:
-      print util.jsonstr2dict(msg)
-      print environ
-      ws.send(msg)
-  print '<<<<<<<<<< EXIT'
+      removed_list = chatroom.handle_message(msg, me)
+    if me.get_key() in removed_list:
+      break
+  print '<<<<<<<<<< EXIT: %s' % str(chatroom.get_member_count())
 
 server = pywsgi.WSGIServer(('oti10.com', 9090), myapp, handler_class = WebSocketHandler)
 server.serve_forever()

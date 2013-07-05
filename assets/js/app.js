@@ -37,7 +37,7 @@ var __socket;
   } 
   __socket.onopen = function(ev){
     console.log('open event => ', ev);
-    first_mess = JSON.stringify({'request':'/me/id','params':null});
+    first_mess = JSON.stringify({'request':'/get/self/id','params':null});
     __socket.send(first_mess);
   }
 })();
